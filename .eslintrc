@@ -1,0 +1,14 @@
+{
+  "extends": "airbnb",
+  "env": {
+    "node": true,
+    "es6": true,
+    "browser": true,
+    "jquery": true
+  },
+  "rules": {
+    "linebreak-style": 0,
+    "arrow-parens": 0
+  },
+  "plugins": ["pug"],
+}
