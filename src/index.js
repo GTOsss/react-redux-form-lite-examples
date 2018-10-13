@@ -5,6 +5,8 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import Routes from '@containers/main';
 import createStore from './store/create-store';
 
+import mainStyle from '@styles/main.scss';
+
 const store = createStore();
 
 ReactDOM.render(
