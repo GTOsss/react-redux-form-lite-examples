@@ -1,10 +1,16 @@
 const path = require('path');
 const autoprefixer = require('autoprefixer');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const index = new HtmlWebpackPlugin({
   template: path.join(__dirname, '../src/template.html'),
   filename: 'index.html',
+});
+
+const miniCssExtractPlugin = new MiniCssExtractPlugin({
+  filename: './main.css',
+  chunkFilename: '[id].css',
 });
 
 module.exports = require('./webpack.base.config')({
@@ -18,6 +24,12 @@ module.exports = require('./webpack.base.config')({
       {
         test: /\.scss$/,
         use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '../',
+            },
+          },
           {
             loader: 'css-loader',
             options: {
@@ -54,6 +66,7 @@ module.exports = require('./webpack.base.config')({
     ],
   },
   plugins: [
+    miniCssExtractPlugin,
     index,
   ],
   mode: 'development',

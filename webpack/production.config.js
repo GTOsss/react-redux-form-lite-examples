@@ -2,10 +2,16 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const autoprefixer = require('autoprefixer');
 
+const index = new HtmlWebpackPlugin({
+  template: path.join(__dirname, '../src/template.html'),
+  filename: 'index.html',
+});
+
 const miniCssExtractPlugin = new MiniCssExtractPlugin({
   filename: '../styles/main.css',
   chunkFilename: '[id].css',
 });
+
 
 module.exports = require('./webpack.base.config')({
   devtool: false,
