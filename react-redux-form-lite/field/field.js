@@ -17,7 +17,9 @@ class Field extends Component {
       name,
       actions: { registerField },
       formContext: { form },
+      fieldArrayContext: { fieldName: fieldArrayName },
     } = this.props;
+
     registerField(form, name);
   }
 
@@ -33,11 +35,13 @@ Field.propTypes = {
   name: PropTypes.string.isRequired,
   component: PropTypes.oneOfType([PropTypes.func, PropTypes.element]).isRequired,
   formContext: PropTypes.objectOf(PropTypes.any),
+  fieldArrayContext: PropTypes.objectOf(PropTypes.any),
 };
 
 Field.defaultProps = {
   actions: {},
   formContext: {},
+  fieldArrayContext: {},
 };
 
 const mapStateToProps = (state) => ({});
@@ -46,12 +50,14 @@ const mapDispatchToProps = (dispatch) => ({
   actions: { ...bindActionCreators(actions, dispatch) },
 });
 
+const FieldConnected = connect(mapStateToProps, mapDispatchToProps)(Field);
+
 const FieldWithContext = (props) => (
   <ReduxFormContext.Consumer>
     {(formContext) => (
       <FieldArrayContext.Consumer>
         {(fieldArrayContext) => (
-          <Field
+          <FieldConnected
             {...props}
             formContext={formContext}
             fieldArrayContext={fieldArrayContext}
@@ -62,4 +68,4 @@ const FieldWithContext = (props) => (
   </ReduxFormContext.Consumer>
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(FieldWithContext);
+export default FieldWithContext;

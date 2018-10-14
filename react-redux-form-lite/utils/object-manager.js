@@ -1,42 +1,4 @@
-/*eslint-disable */
-const charCodeOfDot = '.'.charCodeAt(0);
-const reEscapeChar = /\\(\\)?/g;
-const rePropName = RegExp(
-  // Match anything that isn't a dot or bracket.
-  '[^.[\\]]+' + '|' +
-  // Or match property names within brackets.
-  '\\[(?:' +
-  // Match a non-string expression.
-  '([^"\'].*)' + '|' +
-  // Or match strings (supports escaping characters).
-  '(["\'])((?:(?!\\2)[^\\\\]|\\\\.)*?)\\2' +
-  ')\\]' + '|' +
-  // Or match "" as the space between consecutive dots or empty brackets.
-  '(?=(?:\\.|\\[\\])(?:\\.|\\[\\]|$))'
-  , 'g',
-);
-
-const stringToPath = (string) => {
-  const result = [];
-  if (typeof string !== 'string') {
-    console.error(`ReduxForm: Invalid name for Field: '${string}'. Perhaps form does not contain any Fields.`);
-    return result;
-  }
-
-  if (string.charCodeAt(0) === charCodeOfDot) {
-    result.push('');
-  }
-  string.replace(rePropName, (match, expression, quote, subString) => {
-    let key = match;
-    if (quote) {
-      key = subString.replace(reEscapeChar, '$1');
-    } else if (expression) {
-      key = expression.trim();
-    }
-    result.push(key);
-  });
-  return result;
-};
+import stringToPath from 'lodash.topath';
 
 /**
  *
@@ -56,8 +18,7 @@ export const addToObjectByPath = (state, path, value, pathIndex = 0) => {
   }
 
   const first = path[pathIndex];
-  const firstState =
-    state && (Array.isArray(state) ? state[Number(first)] : state[first]);
+  const firstState = state && (Array.isArray(state) ? state[Number(first)] : state[first]);
   const next = addToObjectByPath(firstState, path, value, pathIndex + 1);
 
   if (!state) {
@@ -89,34 +50,34 @@ export const addToObjectByPath = (state, path, value, pathIndex = 0) => {
  */
 export const getIn = (state, field) => {
   if (!state) {
-    return state
+    return state;
   }
 
   const path = stringToPath(field);
   const length = path.length;
   if (!length) {
-    return undefined
+    return undefined;
   }
 
   let result = state;
   for (let i = 0; i < length && result; ++i) {
-    result = result[path[i]]
+    result = result[path[i]];
   }
 
-  return result
+  return result;
 };
 
 const deleteInWithPath = (state, first, ...rest) => {
   if (state === undefined || state === null || first === undefined || first === null) {
-    return state
+    return state;
   }
 
   if (rest.length) {
     if (Array.isArray(state)) {
       if (isNaN(first)) {
         throw new Error(
-          `Must access array elements with a number, not "${String(first)}".`
-        )
+          `Must access array elements with a number, not "${String(first)}".`,
+        );
       }
       const firstIndex = Number(first);
       if (firstIndex < state.length) {
@@ -124,10 +85,10 @@ const deleteInWithPath = (state, first, ...rest) => {
         if (result !== state[firstIndex]) {
           const copy = [...state];
           copy[firstIndex] = result;
-          return copy
+          return copy;
         }
       }
-      return state
+      return state;
     }
     if (first in state) {
       const result = deleteInWithPath(state && state[first], ...rest);
@@ -135,34 +96,34 @@ const deleteInWithPath = (state, first, ...rest) => {
         ? state
         : {
           ...state,
-          [first]: result
-        }
+          [first]: result,
+        };
     }
-    return state
+    return state;
   }
 
   if (Array.isArray(state)) {
     if (isNaN(first)) {
       throw new Error(
         `Cannot delete non-numerical index from an array. Given: "${String(
-          first
-        )}`
-      )
+          first,
+        )}`,
+      );
     }
     const firstIndex = Number(first);
     if (firstIndex < state.length) {
       const copy = [...state];
       copy.splice(firstIndex, 1);
-      return copy
+      return copy;
     }
-    return state
+    return state;
   }
   if (first in state) {
     const copy = { ...state };
     delete copy[first];
-    return copy
+    return copy;
   }
-  return state
+  return state;
 };
 
 /**
