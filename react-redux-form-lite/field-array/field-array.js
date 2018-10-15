@@ -65,7 +65,7 @@ FieldArray.defaultProps = {
 const mapStateToProps = (state, props) => {
   const { formContext: { form } = {}, name } = props;
   return {
-    fieldArray: getIn(state, `reduxForm.${form}.${name}`) || [],
+    fieldArray: getIn(state, `reduxForm.${form}.values.${name}`) || [],
   };
 };
 

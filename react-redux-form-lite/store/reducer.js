@@ -8,6 +8,12 @@ import {
 
 const initialState = {};
 
+const updateValue = (state, pathValue, pathMeta, value, meta) => {
+  let newState = { ...state };
+  newState = addToObjectByPath(newState, pathValue, value);
+  return addToObjectByPath(newState, pathMeta, meta);
+};
+
 export default (state = initialState, { type, payload, meta }) => {
   const {
     form, field, fieldArray,
@@ -16,18 +22,18 @@ export default (state = initialState, { type, payload, meta }) => {
     value,
   } = payload || {};
 
-  const fieldPath = fieldArray ? `${form}.${fieldArray}.${field}` : `${form}.${field}`;
+  const pathValue = fieldArray ? `${form}.values.${fieldArray}.${field}` : `${form}.values.${field}`;
+  const pathMeta = fieldArray ? `${form}.meta.${fieldArray}.${field}` : `${form}.meta.${field}`;
 
   let newState = { ...state };
 
-  window.addToObjectByPath = addToObjectByPath;
-
   switch (type) {
     case REGISTER_FIELD:
-      return addToObjectByPath(newState, fieldPath, null);
+      return updateValue(newState, pathValue, pathMeta, null, {});
+    case CHANGE:
+      return updateValue(newState, pathValue, pathMeta, value, { changed: true });
     case ARRAY_PUSH:
-      console.log(state, addToObjectByPath(newState, fieldPath, value));
-      return addToObjectByPath(newState, fieldPath, value);
+      return updateValue(newState, pathValue, pathMeta, value, {});
     default:
       return state;
   }

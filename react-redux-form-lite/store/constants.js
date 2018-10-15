@@ -4,3 +4,5 @@ export const REGISTER_FIELD = `${key}REGISTER_FIELD`;
 export const CHANGE = `${key}CHANGE`;
 export const BLUR = `${key}BLUR`;
 export const ARRAY_PUSH = `${key}ARRAY_PUSH`;
+export const UPDATE_ERROR = `${key}UPDATE_ERROR`;
+export const UPDATE_WARNING = `${key}UPDATE_WARNING`;
