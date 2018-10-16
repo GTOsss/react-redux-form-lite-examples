@@ -4,22 +4,20 @@ import stringToPath from 'lodash.topath';
  *
  * @param {object} state Object will be expand
  * @param {string} path Path in object
- * @param {any} value Value will be add
+ * @param {*} value Value will be add
  * @param {number} pathIndex Not require
  * @returns {object} State
  */
 export const addToObjectByPath = (state, path, value, pathIndex = 0) => {
-  if (pathIndex === 0) {
-    path = stringToPath(path);
-  }
+  const pathArray = pathIndex === 0 ? stringToPath(path) : path;
 
-  if (pathIndex >= path.length) {
+  if (pathIndex >= pathArray.length) {
     return value;
   }
 
-  const first = path[pathIndex];
+  const first = pathArray[pathIndex];
   const firstState = state && (Array.isArray(state) ? state[Number(first)] : state[first]);
-  const next = addToObjectByPath(firstState, path, value, pathIndex + 1);
+  const next = addToObjectByPath(firstState, pathArray, value, pathIndex + 1);
 
   if (!state) {
     if (isNaN(first)) {
@@ -44,7 +42,7 @@ export const addToObjectByPath = (state, path, value, pathIndex = 0) => {
 
 /**
  *
- * @param {object} state
+ * @param {object} state Redux state
  * @param {string} field Path to field
  * @returns {object} State
  */
@@ -54,13 +52,13 @@ export const getIn = (state, field) => {
   }
 
   const path = stringToPath(field);
-  const length = path.length;
+  const { length } = path;
   if (!length) {
     return undefined;
   }
 
   let result = state;
-  for (let i = 0; i < length && result; ++i) {
+  for (let i = 0; i < length && result; i += 1) {
     result = result[path[i]];
   }
 
@@ -127,7 +125,7 @@ const deleteInWithPath = (state, first, ...rest) => {
 };
 
 /**
- * @param {object} state
+ * @param {object} state Redux state
  * @param {string} field Path to field
  * @returns {object} State
  */
